@@ -1,12 +1,11 @@
-import useHttp from "../../hooks/use-http";
-
-import Section from "../UI/Section";
-import TaskForm from "./TaskForm";
+import Section from '../UI/Section';
+import TaskForm from './TaskForm';
+import useHttp from '../../hooks/use-http';
 
 const NewTask = (props) => {
-  const { isLoading, error, sendRequest: sendTask } = useHttp();
+  const { isLoading, error, sendRequest: sendTaskRequest } = useHttp();
 
-  const addTask = (taskText, taskData) => {
+  const createTask = (taskText, taskData) => {
     const generatedId = taskData.name; // firebase-specific => "name" contains generated id
     const createdTask = { id: generatedId, text: taskText };
 
@@ -14,18 +13,19 @@ const NewTask = (props) => {
   };
 
   const enterTaskHandler = async (taskText) => {
-    sendTask(
+    sendTaskRequest(
       {
-        Url: "https://react-app-3681c-default-rtdb.firebaseio.com/tasks.json",
-        method: "POST",
-        body: taskText,
+        url: 'https://react-app-3681c-default-rtdb.firebaseio.com/tasks.json',
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
+        body: { text: taskText },
       },
-      addTask.bind(null, taskText)
+      createTask.bind(null, taskText)
     );
   };
+
   return (
     <Section>
       <TaskForm onEnterTask={enterTaskHandler} loading={isLoading} />
